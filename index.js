@@ -6,7 +6,9 @@ const bodyparser = require('body-parser');
 const request = require('request');
 
 const app = express();
-
+app.get('/', function(request, response) {
+	  response.send('Hello World!')
+});
 const assistant = new watson.AssistantV1({
   username: 'aadb4a3d-ab32-436b-880f-9227359a8b6d',
   password: '6y6GE7RHC4pm',

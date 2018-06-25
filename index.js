@@ -16,7 +16,7 @@ app.post('webhook', function(req, res, next) {
 	res.status(200).end();
 	for (let event of req.body.events) {
 		if (event.type == 'message') {
-			
+			let wtsnmsg;
 			assistant.message({
 			  workspace_id: '47f28b48-47a1-4b41-ad2f-6d8317501727',
 			  input: {'text': event.message.text}
@@ -24,7 +24,8 @@ app.post('webhook', function(req, res, next) {
 			  if (err)
 			    console.log('error:', err);
 			  else
-			    console.log(JSON.stringify(response, null, 2));
+			    wtsnmsg = response.output.text;
+					console.log(JSON.stringify(response, null, 2));
 			});
 			const headers = {
 				'Content-Type': 'application/json',

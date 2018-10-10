@@ -159,7 +159,6 @@ async function type(wttext) {
 	// 登録済みの返答はそのまま返す
 	let text = wttext;
 	if(conv_type == undefined) {
-		text = 'まごに聞いてみるよ';
 
 		const options = {
 			method: 'POST',
@@ -175,8 +174,9 @@ async function type(wttext) {
 		await rp(options)
 			.then(function(body){
 				console.log('リクエストしました');
-				return text;
 		});
+		text = 'まごに聞いてみるよ';
+
 	} else if(conv_type == "zatsudan") {
 		text = await docomo(wttext);
 	}

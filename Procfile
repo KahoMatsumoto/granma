@@ -1,1 +1,1 @@
-web: node fbtest
+web: node index

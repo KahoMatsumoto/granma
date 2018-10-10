@@ -56,7 +56,7 @@ let magicword;
 async function handleEvent(event) {
 	//ユーザ認証
 	lineid = event.source.userId;
-	await ref_user.onse("value", function(snapshot) {
+	await ref_user.once("value", function(snapshot) {
 		magicword = snapshot.child(lineid).val();
 	},
 	function(errorObject) {
@@ -118,7 +118,7 @@ async function handleEvent(event) {
 		console.log("ユーザ: " + user_input);
 		magicword = snapshot.child(lineid).val();
 
-		await ref_mw.onse('value', function(ss) {
+		await ref_mw.once('value', function(ss) {
 			workspaceid = ss.child(magicword).val().workspace_id;
 		},
 		function(errorObject) {
@@ -191,7 +191,7 @@ async function docomo(text) {
 	// jsonファイルに存在しなければ新しいIDの取得
 	// 存在していればユーザの情報を一時保存する
 	let json;
-	ref_docomo.onse('value', async function(snapshot) {
+	ref_docomo.once('value', async function(snapshot) {
 		json = snapshot.child(lineid).val();
 	},
 	function(errorObject) {

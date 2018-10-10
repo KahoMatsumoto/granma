@@ -191,7 +191,7 @@ async function docomo(text) {
 	// jsonファイルに存在しなければ新しいIDの取得
 	// 存在していればユーザの情報を一時保存する
 	let json;
-	ref_docomo.once('value', async function(snapshot) {
+	await ref_docomo.once('value', async function(snapshot) {
 		json = snapshot.child(lineid).val();
 	},
 	function(errorObject) {

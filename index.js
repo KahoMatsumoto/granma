@@ -32,12 +32,12 @@ const assistant = new watson.AssistantV1({
 // firebase設定
 admin.initializeApp( {
 	credential: admin.credential.cert(serviceAccount),
-	databaseURL: 'https://can-i-granma.firebaseio.com'
+	databaseURL: "https://can-i-granma.firebaseio.com"
 });
 
 const db = admin.database();
-let ref_mw = db.ref('magic_words');
-let ref_user = db.ref('line_ids');
+const ref_mw = db.ref("magic_words");
+const ref_user = db.ref("line_ids");
 
 app.post('/webhook', line.middleware(config), (req, res) => {
 	console.log(req.body.events);
@@ -56,95 +56,101 @@ let magicword;
 async function handleEvent(event) {
 	//ユーザ認証
 	lineid = event.source.userId;
-	ref_user.onse('value', async function(snapshot) {
-		if(snapshot.child(lineid).val()==null) {
-
-			magicword = event.message.text;
-
-			const workspace = {
-				name: `${magicword}`,
-				description: `line bot for ${magicword}`,
-				intents: [{
-					intent:"zatsudan",
-					examples:[
-						{text:"おはよう"},
-						{text:"こんばんは"},
-						{text:"おやすみ"},
-						{text:"そうなんだね"},
-						{text:"お話して"},
-						{text:"あなたはだれ"},
-						{text:"おもしろいね"},
-						{text:"たのしいね"},
-						{text:"こんにちは"}
-					],
-				}],
-				language : 'ja',
-				dialog_nodes:[{
-          type:"standard",
-          title:"雑談",
-          output:{
-            text:{
-              values:[],
-              selection_policy:"sequential"
-            }
-          },
-          context:{type:"zatsudan"},
-          conditions:"#zatsudan",
-        dialog_node:"node_1_1539094629105"}
-        ]
-			};
-			let workspaceid;
-			await assistant.createWorkspace(workspace, async function(err, res) {
-				if (err) {
-					console.error(err);
-				} else {
-					workspaceid = res.workspace_id;
-					await ref_user.child(lineid).set(magicword);
-					await ref_mw.child(magicword).set({
-				 		granma_id: lineid,
-				 		mago_id: null,
-				 		workspace_id: workspaceid,
-				 		intent : null
-					});
-				}
-			});
-		} else {
-			user_input = event.message.text;
-			console.log("ユーザ: " + user_input);
-			magicword = snapshot.child(lineid).val();
-
-			ref_mw.onse('value', async function(ss) {
-				workspaceid = ss.child(magicword).val().workspace_id;
-
-				if (event.type !== 'message' || event.message.type !== 'text') {
-					return Promise.resolve(null);
-				}
-
-				let wtsnmsg = 'だめ';
-				await assistant.message(
-				{
-				workspace_id: workspaceid,
-	  		input: {'text': user_input},
-				//context: user_handler
-				},
-				async function(err, response) {
-	  			if (err) {
-	    			console.log('error:', err);
-	  			} else {
-						user_handler = response.context;
-	    			wtsnmsg = await type(String(response.output.text));
-						//console.log(JSON.stringify(response, null, 2));
-						console.log("返答: " + wtsnmsg);
-
-						return client.replyMessage(event.replyToken, {
-							type: 'text',
-							text: wtsnmsg
-						});
-					}
-				});
-			});
-		}
+	await ref_user.onse("value", function(snapshot) {
+		magicword = snapshot.child(lineid).val();
+	},
+	function(errorObject) {
+		console.log(`The read faild: ${errorObject.code}`);
 	});
+	if(magicword==null) {
+
+		magicword = event.message.text;
+
+		const workspace = {
+			name: `${magicword}`,
+			description: `line bot for ${magicword}`,
+			intents: [{
+				intent:"zatsudan",
+				examples:[
+					{text:"おはよう"},
+					{text:"こんばんは"},
+					{text:"おやすみ"},
+					{text:"そうなんだね"},
+					{text:"お話して"},
+					{text:"あなたはだれ"},
+					{text:"おもしろいね"},
+					{text:"たのしいね"},
+					{text:"こんにちは"}
+				],
+			}],
+			language : 'ja',
+			dialog_nodes:[{
+        type:"standard",
+        title:"雑談",
+        output:{
+          text:{
+            values:[],
+            selection_policy:"sequential"
+          }
+        },
+        context:{type:"zatsudan"},
+        conditions:"#zatsudan",
+      dialog_node:"node_1_1539094629105"}
+      ]
+		};
+		let workspaceid;
+		await assistant.createWorkspace(workspace, async function(err, res) {
+			if (err) {
+				console.error(err);
+			} else {
+				workspaceid = res.workspace_id;
+				await ref_user.child(lineid).set(magicword);
+				await ref_mw.child(magicword).set({
+			 		granma_id: lineid,
+			 		mago_id: null,
+			 		workspace_id: workspaceid,
+			 		intent : null
+				});
+			}
+		});
+	} else {
+		user_input = event.message.text;
+		console.log("ユーザ: " + user_input);
+		magicword = snapshot.child(lineid).val();
+
+		await ref_mw.onse('value', function(ss) {
+			workspaceid = ss.child(magicword).val().workspace_id;
+		},
+		function(errorObject) {
+			console.log(`The read faild: ${errorObject.code}`);
+		});
+		if (event.type !== 'message' || event.message.type !== 'text') {
+			return Promise.resolve(null);
+		}
+
+		let wtsnmsg = 'だめ';
+		await assistant.message(
+		{
+		workspace_id: workspaceid,
+		input: {'text': user_input},
+		//context: user_handler
+		},
+		async function(err, response) {
+			if (err) {
+  			console.log('error:', err);
+			} else {
+				user_handler = response.context;
+  			wtsnmsg = await type(String(response.output.text));
+				//console.log(JSON.stringify(response, null, 2));
+				console.log("返答: " + wtsnmsg);
+
+				return client.replyMessage(event.replyToken, {
+					type: 'text',
+					text: wtsnmsg
+				});
+			}
+		});
+	}
 }
 
 async function type(wttext) {
@@ -184,8 +190,13 @@ async function docomo(text) {
 	// LINEユーザごとに異なるdocomo雑談IDを対応させる
 	// jsonファイルに存在しなければ新しいIDの取得
 	// 存在していればユーザの情報を一時保存する
+	let json;
 	ref_docomo.onse('value', async function(snapshot) {
-		let json = snapshot.child(lineid).val();
+		json = snapshot.child(lineid).val();
+	},
+	function(errorObject) {
+		console.log(`The read faild: ${errorObject.code}`);
+	});
 		if(json != null) {
 			docomo_id = json.id;
 			req_time = json.reqtime;
@@ -248,7 +259,6 @@ async function docomo(text) {
 			docomo_text = body.systemText.expression;
 		});
 		return String(docomo_text);
-	});
 }
 
 //async function connect(pass){

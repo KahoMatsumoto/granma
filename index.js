@@ -156,7 +156,7 @@ async function type(wttext) {
 
 		const options = {
 			method: 'POST',
-			uri: 'https://maaaaaaaaago.now.sh/addreq',
+			uri: 'https://maaago.herokuapp.com/addreq',
 			headers: {
 				'Content-Type':'application/json'
 			},

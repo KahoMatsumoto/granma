@@ -77,15 +77,7 @@ async function handleEvent(event) {
 			intents: [{
 				intent:"zatsudan",
 				examples:[
-					{text:"おはよう"},
-					{text:"こんばんは"},
-					{text:"おやすみ"},
-					{text:"そうなんだね"},
-					{text:"お話して"},
-					{text:"あなたはだれ"},
-					{text:"おもしろいね"},
-					{text:"たのしいね"},
-					{text:"こんにちは"}
+					{text:"おはよう"}
 				],
 			}],
 			language : 'ja',

@@ -113,6 +113,10 @@ async function handleEvent(event) {
 				});
 			}
 		});
+		return client.replyMessage(event.replyToken, {
+			type: 'text',
+			text: `合言葉は${magicword}だね．家族に教えてね`
+		});
 	} else {
 		user_input = event.message.text;
 		console.log("ユーザ: " + user_input);

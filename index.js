@@ -56,7 +56,7 @@ let magicword;
 async function handleEvent(event) {
 	//ユーザ認証
 	lineid = event.source.userId;
-	await ref_user.onse('value', async function(snapshot) {
+	ref_user.onse('value', async function(snapshot) {
 		if(snapshot.child(lineid).val()==null) {
 
 			magicword = event.message.text;
@@ -113,7 +113,7 @@ async function handleEvent(event) {
 			console.log("ユーザ: " + user_input);
 			magicword = snapshot.child(lineid).val();
 
-			await ref_mw.onse('value', async function(ss) {
+			ref_mw.onse('value', async function(ss) {
 				workspaceid = ss.child(magicword).val().workspace_id;
 
 				if (event.type !== 'message' || event.message.type !== 'text') {
@@ -184,7 +184,7 @@ async function docomo(text) {
 	// LINEユーザごとに異なるdocomo雑談IDを対応させる
 	// jsonファイルに存在しなければ新しいIDの取得
 	// 存在していればユーザの情報を一時保存する
-	await ref_docomo.onse('value', async function(snapshot) {
+	ref_docomo.onse('value', async function(snapshot) {
 		let json = snapshot.child(lineid).val();
 		if(json != null) {
 			docomo_id = json.id;

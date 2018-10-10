@@ -26,6 +26,7 @@ app.use('/answer',bparser.json());
 
 app.post('/answer', async function(req, res) {
 	await aliveA(req.body);
+	res.send('ok');
 });
 
 // watson設定

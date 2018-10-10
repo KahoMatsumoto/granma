@@ -175,7 +175,7 @@ async function type(wttext) {
 			.then(function(body){
 				console.log('リクエストしました');
 		});
-		text = 'まごに聞いてみるよ';
+		text = "まごに聞いてみるよ";
 
 	} else if(conv_type == "zatsudan") {
 		text = await docomo(wttext);

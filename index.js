@@ -36,8 +36,8 @@ admin.initializeApp( {
 });
 
 const db = admin.database();
-const ref_mw = db.ref('magic_words');
-const ref_user = db.ref('line_ids');
+let ref_mw = db.ref('magic_words');
+let ref_user = db.ref('line_ids');
 
 app.post('/webhook', line.middleware(config), (req, res) => {
 	console.log(req.body.events);

@@ -6,6 +6,7 @@ const watson = require('watson-developer-cloud');
 const admin = require('firebase-admin');
 const serviceAccount = require('./cert/can-i-granma-firebase-adminsdk-8cnv6-af9c27b17a.json');
 const express = require('express');
+const bparser = require('body-parser');
 const request = require('request');
 const line = require('@line/bot-sdk');
 const rp = require('request-promise');
@@ -21,6 +22,10 @@ const config = {
 };
 
 const app = express();
+
+app.post('/answer', async function(req, res) {
+	await aliveA(req.body);
+});
 
 // watson設定
 const assistant = new watson.AssistantV1({
@@ -177,6 +182,7 @@ async function type(wttext) {
 		await rp(options)
 			.then(function(body){
 				console.log('リクエストしました');
+				return text;
 		});
 	} else if(conv_type == "zatsudan") {
 		text = await docomo(wttext);
@@ -184,6 +190,28 @@ async function type(wttext) {
 	return text;
 }
 
+async function aliveA(body) {
+//intent候補を記録しておく
+	let magicword = body.magic_word;
+	let intent = body.intent;
+	let answer = body.answer;
+
+	let lineid;
+	await ref_mw.once("value", async function(snapshot) {
+		lineid = snapshot.child(magicword).val().granma_id;
+		//push通知をする
+		const message = {
+			type: 'text',
+			text: `「${intent}」って聞いたら，「${answer}」って教えてもらったよ！今度からは僕が答えるね〜`
+		};
+
+		await client.pushMessage(lineid, message).then(() => {
+			console.log('success');
+		}).catch((err) => {
+			console.error(err);
+		});
+	});
+}
 
 const ref_docomo = db.ref('docomo');
 async function docomo(text) {
@@ -268,4 +296,6 @@ async function docomo(text) {
 
 //}
 app.listen(PORT);
+app.use('/answer',bparser.json());
+
 console.log(`Server running at ${PORT}`);

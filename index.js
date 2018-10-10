@@ -22,6 +22,7 @@ const config = {
 };
 
 const app = express();
+app.use('/answer',bparser.json());
 
 app.post('/answer', async function(req, res) {
 	await aliveA(req.body);
@@ -288,6 +289,6 @@ async function docomo(text) {
 
 //}
 app.listen(PORT);
-app.use('/answer',bparser.json());
+
 
 console.log(`Server running at ${PORT}`);

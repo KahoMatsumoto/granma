@@ -10,7 +10,8 @@ admin.initializeApp( {
 const db = admin.database();
 const ref = db.ref("magic_words");
 const ref1 = db.ref('line_ids');
-
+go();
+async function go(){
 await ref.once("value", async function(snapshot) {
 	console.log(snapshot.val().unhappy==null);
 	let magicword = 'unhappy';
@@ -22,6 +23,7 @@ await ref.once("value", async function(snapshot) {
 function(errorObject) {
 	console.log(`The read faild: ${errorObject.code}`);
 });
+}
 ref1.child('gaki').set({
 	id : 'nntyo',
 	hoge : 'hooooooge'

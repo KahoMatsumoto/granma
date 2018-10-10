@@ -229,7 +229,7 @@ async function docomo(text) {
 			await ref_docomo.child(lineid).set({
 				id : docomo_id,
 				reqtime : req_time,
-				restime : restime
+				restime : res_time
 			});
 		}
 

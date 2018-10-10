@@ -120,7 +120,6 @@ async function handleEvent(event) {
 	} else {
 		user_input = event.message.text;
 		console.log("ユーザ: " + user_input);
-		magicword = snapshot.child(lineid).val();
 
 		await ref_mw.once('value', function(ss) {
 			workspaceid = ss.child(magicword).val().workspace_id;

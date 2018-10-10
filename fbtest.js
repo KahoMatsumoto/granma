@@ -11,7 +11,7 @@ const db = admin.database();
 const ref = db.ref("magic_words");
 const ref1 = db.ref('line_ids');
 
-ref.once("value", async function(snapshot) {
+await ref.once("value", async function(snapshot) {
 	console.log(snapshot.val().unhappy==null);
 	let magicword = 'unhappy';
 	console.log(snapshot.child(magicword).val()==null);
